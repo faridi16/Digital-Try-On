@@ -1,7 +1,0 @@
-fastapi
-uvicorn
-rembg[cpu]
-Pillow
-transformers
-torch
-python-multipart
