@@ -75,8 +75,20 @@ async def generate_avatar(
 @app.post("/mode-b/warp")
 async def warp_photo(file: UploadFile = File(...)):
     task_id = f"task_{int(time.time())}"
-    b64_img = mock_warp_b64()
-    TASKS[task_id] = {"status": "SUCCESS", "result": {"asset_url": b64_img}}
+    
+    # Simulate a computer vision failure for invalid photos based on filename
+    filename = (file.filename or "").lower()
+    invalid_keywords = ["dog", "cat", "blur", "unclear", "empty", "fail", "bad", "nonhuman", "animal"]
+    
+    if any(keyword in filename for keyword in invalid_keywords):
+        TASKS[task_id] = {
+            "status": "FAILURE", 
+            "error_message": "Invalid photo detected. Please upload a clear, full-body human photo."
+        }
+    else:
+        b64_img = mock_warp_b64()
+        TASKS[task_id] = {"status": "SUCCESS", "result": {"asset_url": b64_img}}
+        
     return {"task_id": task_id, "status": "QUEUED"}
 
 @app.get("/tasks/{task_id}")
