@@ -1,0 +1,44 @@
+1. Problem Statement
+The Myntra wishlist funnel experiences high pre-purchase drop-offs because static, studio-lit catalog photos fail to resolve 65% size uncertainty and 55% fabric drape/quality doubt.
+
+From an engineering perspective, current clients face three compounding systemic constraints:
+
+Visual Decoupling: 2D asset grids provide zero geometric context regarding how a multi-size stretch fabric contours across non-standard human skeletal topologies or varying body masses.
+
+Client-Side Rendering Bottlenecks: Executing real-time 3D cloth simulation or neural radiance field (NeRF) mapping locally on mobile hardware frequently triggers severe thermal throttling, high memory spikes, and aggressive out-of-memory (OOM) crashes on mid-range Android devices.
+
+Asynchronous Asset Ingestion Latency: Raw seller-provided garment catalog assets lack standard depth maps, skeletal rigging metadata, and normalized transparent alpha channels, causing processing queues to fail or stall during live user interactions.
+
+2. Technical Architecture & Component Scope
+Client-Server Split: Offload heavy computer vision tasks (body segmentation, depth estimation, and 3D mesh texturing) to scalable backend GPU worker clusters, returning optimized, lightweight rendering assets to the client.
+
+Dual-Mode Engine Pipeline:
+
+Mode A (Body Double / AI Avatar): Parametric 3D avatar generation using pre-rigged base meshes scaled via numerical weight/height input arrays.
+
+Mode B (Photo-Realistic AR): Single-image silhouette warping combined with 2D-to-3D texture coordinate mapping for accurate cloth draping.
+
+3. Engineering Risks & Mitigation Steps
+Risk 1: High Rendering Latency & Client-Side Stuttering
+
+Failure Mode: Heavy computational overhead during 3D avatar generation or AR mesh warping causes frame drops (< 15 FPS) and high user abandonment on low-end smartphones.
+
+Mitigation Step: We offload the heavy cloth simulation and mesh rendering computations to server-side GPU worker clusters, and stream optimized, compressed low-polygon texture assets back to the client device.
+
+Risk 2: Asset Pipeline Failures from Unstandardized Seller Inputs
+
+Failure Mode: Inconsistent input images from third-party sellers (varying backgrounds, irregular lighting, lack of alpha masks) corrupt the real-time texture wrapping pipeline.
+
+Mitigation Step: We implement an automated preprocessing microservice that runs computer vision background removal, normalizes image dimensions, and standardizes color profiles before the asset hits the user-facing cache.
+
+Risk 3: Memory Exhaustion and OOM Crashes on Mobile Clients
+
+Failure Mode: Storing multiple high-resolution 3D garment textures and avatar states in local client memory causes sudden application crashes during extended wishlist sessions.
+
+Mitigation Step: We enforce strict memory management policies by utilizing ephemeral, compressed texture caches with aggressive garbage collection and a hard three-second timeout ceiling backed by a fallback vector loading state.
+
+Risk 4: User Data Privacy Vulnerabilities and Regulatory Exposure
+
+Failure Mode: Storing user-uploaded full-body photographs or sensitive body dimension profiles on persistent cloud databases introduces significant privacy risks and compliance overhead.
+
+Mitigation Step: We process all uploaded photos within isolated, ephemeral container sessions, instantly purging raw image data from memory immediately after the session token expires, ensuring zero long-term personal data retention.

@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  frontend-ui:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend_ui/stitch_realistic_frame_visualizer:/usr/share/nginx/html:ro
+
+  preprocessing-service:
+    build:
+      context: ./preprocessing_service
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+
+  api-gateway:
+    build: 
+      context: ./backend_engine/api_gateway
+    ports:
+      - "8001:8001"
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - PREPROCESSING_SERVICE_URL=http://preprocessing-service:8000
+    depends_on:
+      - redis
+      - preprocessing-service
+
+  gpu-worker:
+    build:
+      context: ./backend_engine/gpu_workers
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+
+volumes:
+  redis_data:
