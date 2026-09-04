@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import io
 
 st.set_page_config(
@@ -14,34 +14,49 @@ st.markdown("Welcome to the **Digital Fitting Room (MVP)**! Choose a mode below 
 
 tab1, tab2 = st.tabs(["🧍 AI Avatar (Parametric)", "📸 AR Photo Try-On"])
 
-def generate_mock_mesh_image(weight, height, shape):
-    """Generates a simple mock visualization of a 3D bounding box for the avatar."""
-    img = Image.new('RGB', (400, 600), color = (40, 44, 52))
+def get_skin_color_rgb(skin_tone_name):
+    # Hex approximations for common skin tones
+    tones = {
+        "Fair": (255, 224, 189),
+        "Light": (255, 205, 148),
+        "Medium": (224, 172, 105),
+        "Olive": (198, 134, 66),
+        "Tan": (141, 85, 36),
+        "Dark": (104, 58, 20)
+    }
+    return tones.get(skin_tone_name, (224, 172, 105))
+
+def generate_mock_mesh_image(height, shape, skin_tone):
+    """Generates a mock 3D avatar silhouette filled with the selected skin tone."""
+    # Create a nice studio background
+    img = Image.new('RGB', (400, 600), color=(240, 245, 250))
     d = ImageDraw.Draw(img)
+    
+    skin_rgb = get_skin_color_rgb(skin_tone)
     
     # Calculate mock proportions
     h_scale = height / 170.0
-    w_scale = weight / 65.0
-    
-    width = 150 * w_scale
+    width = 160
     if shape == "broad":
-        width *= 1.2
+        width = 190
     elif shape == "slim":
-        width *= 0.8
+        width = 130
         
-    box_height = 400 * h_scale
+    box_height = 300 * h_scale
     
-    # Draw simple bounding box wireframe
-    x1 = 200 - (width/2)
-    x2 = 200 + (width/2)
-    y1 = 300 - (box_height/2)
-    y2 = 300 + (box_height/2)
+    # Center points
+    cx, cy = 200, 350
     
-    d.rectangle([x1, y1, x2, y2], outline=(100, 200, 255), width=3)
-    d.line([x1, y1, x2, y2], fill=(100, 200, 255), width=1)
-    d.line([x2, y1, x1, y2], fill=(100, 200, 255), width=1)
+    # Draw Head
+    head_radius = 45
+    d.ellipse([cx - head_radius, cy - box_height/2 - head_radius*2, cx + head_radius, cy - box_height/2], fill=skin_rgb)
     
-    d.text((10, 10), f"Generated Mesh:\\nHeight: {height}cm\\nWeight: {weight}kg\\nShape: {shape.title()}", fill=(255,255,255))
+    # Draw Torso
+    d.rounded_rectangle([cx - width/2, cy - box_height/2 + 5, cx + width/2, cy + box_height/2], radius=40, fill=skin_rgb)
+    
+    # Add text overlay
+    d.text((15, 15), f"Generated Avatar\\nHeight: {height}cm\\nShape: {shape.title()}\\nSkin Tone: {skin_tone}", fill=(50, 50, 50))
+    
     return img
 
 def mock_warp_image(uploaded_file):
@@ -64,22 +79,22 @@ def mock_warp_image(uploaded_file):
 # --- MODE A: AI AVATAR ---
 with tab1:
     st.subheader("Generate your Parametric Avatar")
-    st.markdown("Enter your measurements to generate a structural 3D bounding mesh.")
+    st.markdown("Enter your measurements to generate your digital double.")
     
     col1, col2 = st.columns(2)
     with col1:
         height = st.slider("Height (cm)", min_value=130, max_value=220, value=170)
         shape = st.selectbox("Body Shape", ["hourglass", "pear", "apple", "rectangle", "broad", "slim"])
     with col2:
-        weight = st.slider("Weight (kg)", min_value=40, max_value=140, value=65)
+        skin_tone = st.selectbox("Skin Tone (Color Analysis)", ["Fair", "Light", "Medium", "Olive", "Tan", "Dark"], index=2)
         
     if st.button("Generate 3D Avatar", type="primary"):
         with st.spinner("Initializing GPU Clusters & Generating Mesh... (Simulating 3s process)"):
             time.sleep(3) # Simulate heavy ML workload
-            mock_img = generate_mock_mesh_image(weight, height, shape)
+            mock_img = generate_mock_mesh_image(height, shape, skin_tone)
             
         st.success("Avatar Generated Successfully!")
-        st.image(mock_img, caption="Parametric 3D Bounding Box (Mock)", use_container_width=True)
+        st.image(mock_img, caption="Parametric 3D Avatar (Mock)", use_container_width=True)
 
 
 # --- MODE B: AR PHOTO ---
