@@ -1,0 +1,15 @@
+[theme]
+# A custom, highly accessible Dark Theme
+base="dark"
+
+# Primary Accent Color: Changed from Streamlit's default Red to an Okabe-Ito Color-Blind Safe Blue (#0072B2)
+# Red can appear as dark muddy brown to Protanopia users and blend into dark backgrounds. 
+# This specific blue remains highly visible and distinct across all forms of color blindness.
+primaryColor="#0072B2"
+
+# Background colors
+backgroundColor="#121212"
+secondaryBackgroundColor="#1E1E1E"
+
+# Text color (High contrast white)
+textColor="#FAFAFA"
