@@ -267,7 +267,7 @@
 
         try {
           // 3. Initiate API Call to Gateway
-          const response = await fetch('https://digital-try-on-api.onrender.com/mode-a/generate', {
+          const response = await fetch('https://digital-try-on-1.onrender.com/mode-a/generate', {
             method: 'POST',
             body: formData
           });
@@ -290,7 +290,7 @@
     async function pollTaskStatus(taskId, originalContent) {
       const pollInterval = setInterval(async () => {
         try {
-          const res = await fetch(`https://digital-try-on-api.onrender.com/tasks/${taskId}`);
+          const res = await fetch(`https://digital-try-on-1.onrender.com/tasks/${taskId}`);
           const data = await res.json();
           
           if (data.status === "SUCCESS") {
