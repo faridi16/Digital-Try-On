@@ -108,7 +108,7 @@
 <!-- BEGIN: 3D Avatar Viewport Area -->
 <section class="relative w-full h-[360px] bg-gradient-to-b from-[#64748b] to-[#475569] flex items-center justify-center overflow-hidden flex-shrink-0" data-purpose="avatar-viewport">
 <!-- 3D Human Avatar Realistic Image -->
-<img alt="Photorealistic 3D Human Female Avatar with Holographic Measurements" class="w-full h-full object-cover object-top filter brightness-105" src="https://lh3.googleusercontent.com/aida/AEtjO1WMVdpixjLH3MdAWP1ZwzTONjBphdQ1HePMVgzzLrzvHzXqm4MjZmsAKssHVgatjIS4I5UgNrROCfNVtvKnHRbnoapGtvwmnhPMq0etyQRjNsOp1RJiK5xHb2lLVs5qWfAwLun4D38QQArR6Wpja_EJCUtsdE2bo9kbfaiCa3ZtGFJMwztKzYhrtTdNn5oqF4lSKIRa7uauOeD3TaPU9Rx8Qg6P6LFH7edbp4dhmyvnArc8UGJW2NgDrA"/>
+<img id="avatar-image" alt="Photorealistic 3D Human Female Avatar with Holographic Measurements" class="w-full h-full object-cover object-top filter brightness-105" src="https://lh3.googleusercontent.com/aida/AEtjO1WMVdpixjLH3MdAWP1ZwzTONjBphdQ1HePMVgzzLrzvHzXqm4MjZmsAKssHVgatjIS4I5UgNrROCfNVtvKnHRbnoapGtvwmnhPMq0etyQRjNsOp1RJiK5xHb2lLVs5qWfAwLun4D38QQArR6Wpja_EJCUtsdE2bo9kbfaiCa3ZtGFJMwztKzYhrtTdNn5oqF4lSKIRa7uauOeD3TaPU9Rx8Qg6P6LFH7edbp4dhmyvnArc8UGJW2NgDrA"/>
 <!-- Subtle Gradient Overlay for visual blending -->
 <div class="absolute inset-0 bg-gradient-to-t from-[#1c2430] via-transparent to-black/20 pointer-events-none"></div>
 <!-- Floating Drag Prompt Overlay -->
@@ -143,14 +143,21 @@
 <input aria-label="Height in centimeters" class="w-full h-1.5 accent-indigo-400 bg-slate-700 rounded-lg cursor-pointer" id="height-slider" max="210" min="130" type="range" value="165"/>
 </div>
 </div>
-<!-- Weight Slider Control -->
+<!-- Skin Tone Selector Control -->
 <div class="space-y-1.5" data-purpose="weight-control">
 <div class="flex justify-between items-center text-sm">
-<span class="text-slate-300 font-medium">Weight</span>
-<span class="bg-[#4338ca] text-indigo-100 text-xs font-semibold px-3 py-0.5 rounded-full shadow-sm" id="weight-val">58 kg</span>
+<span class="text-slate-300 font-medium">Skin Tone (Color Analysis)</span>
+<span class="bg-[#4338ca] text-indigo-100 text-xs font-semibold px-3 py-0.5 rounded-full shadow-sm" id="weight-val">Medium</span>
 </div>
 <div class="relative flex items-center">
-<input aria-label="Weight in kilograms" class="w-full h-1.5 accent-indigo-400 bg-slate-700 rounded-lg cursor-pointer" id="weight-slider" max="130" min="35" type="range" value="58"/>
+<select id="weight-slider" class="w-full h-8 text-sm bg-slate-700 text-white rounded-lg px-2 outline-none border border-slate-600 focus:border-indigo-400">
+  <option value="Fair">Fair</option>
+  <option value="Light">Light</option>
+  <option value="Medium" selected>Medium</option>
+  <option value="Olive">Olive</option>
+  <option value="Tan">Tan</option>
+  <option value="Dark">Dark</option>
+</select>
 </div>
 </div>
 <!-- Body Shape Selector Grid -->
@@ -295,15 +302,18 @@
           
           if (data.status === "SUCCESS") {
             clearInterval(pollInterval);
-            // Replace viewport with the new asset
-            // In a real app, we'd load the glTF via Three.js. Here we mock showing success.
-            viewportSection.innerHTML = `
-              <div class="absolute inset-0 flex flex-col items-center justify-center bg-[#1e2733] z-50">
-                <p class="text-emerald-400 font-bold mb-2">Success!</p>
-                <img src="${data.result.mesh_url}" class="h-64 rounded shadow-lg object-contain" alt="Mock Avatar" />
-                <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-indigo-600 rounded text-xs text-white">Reset</button>
-              </div>
-            `;
+            // Simply swap the placeholder image with the real generated image!
+            const avatarImg = document.getElementById("avatar-image");
+            if (avatarImg) {
+              avatarImg.src = data.result.mesh_url;
+              avatarImg.classList.remove("object-cover");
+              avatarImg.classList.add("object-contain", "bg-slate-900");
+            }
+            
+            // Re-enable button
+            const genBtn = document.getElementById('generate-btn');
+            genBtn.innerHTML = '✨ Avatar Generated!';
+            genBtn.classList.remove('opacity-70', 'cursor-not-allowed', 'animate-pulse');
           } else if (data.status === "FAILURE") {
             clearInterval(pollInterval);
             alert("Backend processing failed.");
