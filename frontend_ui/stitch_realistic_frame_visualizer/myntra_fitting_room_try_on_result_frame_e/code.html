@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Your Try-On Result</title>
+<!-- Tailwind CSS v3 CDN with forms and container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            appDark: '#2b3846',
+            cardBg: '#1e2936',
+            darkBlueSlate: '#18222d',
+            accentPurple: '#2c1e7a',
+            accentTeal: '#059669',
+            badgeTeal: '#008a70'
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-layout">
+    /* Custom subtle glass and shadow styling */
+    .glass-pill {
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 16px);
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex justify-center items-center antialiased">
+<!-- BEGIN: MobileDeviceFrame -->
+<main class="w-full max-w-md h-[100dvh] max-h-[920px] bg-[#222e3b] flex flex-col relative overflow-hidden shadow-2xl rounded-[38px] border-[6px] border-slate-800" data-purpose="mobile-ios-container">
+<!-- BEGIN: TopBar -->
+<header class="w-full px-4 pt-12 pb-3.5 bg-[#3a4857]/95 flex items-center justify-between z-20 shrink-0 border-b border-white/10 shadow-sm" data-purpose="screen-header">
+<!-- Back Button -->
+<button aria-label="Go back" class="p-1.5 text-slate-300 hover:text-white transition-colors">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Screen Title -->
+<h1 class="text-[17px] font-semibold tracking-wide text-slate-100">
+        Your Try-On Result
+      </h1>
+<!-- Close Button -->
+<button aria-label="Close" class="p-1.5 text-slate-300 hover:text-white transition-colors">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</header>
+<!-- END: TopBar -->
+<!-- BEGIN: ARViewportArea -->
+<div class="relative flex-1 w-full bg-[#1b2530] overflow-hidden" data-purpose="ar-tryon-preview-viewport">
+<!-- Try-On Result Image (Photorealistic mirror view) -->
+<img alt="Photorealistic AR virtual try-on final result" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida/AEtjO1UAT5HQM_kGIONmMeG9kOAl809YcK73ljDsAyX8nM2BiKJHRLzMlMXeZxV8iFjxD8Q2Csj-bUdM1XKfgzaVznRRL-SdkQ1_QptNqW0gX17dNpLMGlMwIJsbzFWKWeCx-rVtsHUUCbsn9TT-g278O9qMfekk5Owe-HysRna96iFTPzG_JacSXJZKT-ioXFpzRCCtgw55XwS7lJd_eyKXZ5XGsYRFjg6O7GaCI642YceSFNy2kBmH6dPh4A"/>
+<!-- Subtle Vignette / Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-[#222e3b] via-transparent to-black/30 pointer-events-none"></div>
+<!-- AR HUD Overlay on top of preview -->
+<div class="absolute top-3 inset-x-3 flex items-start justify-between pointer-events-none z-10 px-2" data-purpose="ar-hud-overlay">
+<!-- Left HUD Badge: Size status & Price -->
+<div class="glass-pill px-2.5 py-1.5 rounded-lg border border-white/20 text-left shadow-lg">
+<div class="flex items-center gap-1.5 text-[11px] font-medium text-emerald-400">
+<svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+<span>Size S (Perfect Fit)</span>
+</div>
+<p class="text-[10px] text-slate-300 ml-5 font-normal">Price: ₹ 1,499</p>
+</div>
+<!-- Center Label: Try-on Complete -->
+<span class="text-[10px] font-bold tracking-widest uppercase text-white/90 drop-shadow-md pt-1.5">
+          TRY-ON COMPLETE
+        </span>
+<!-- Right Quick Action Pill: Translucent quick add -->
+<div class="glass-pill px-2.5 py-1.5 rounded-lg border border-white/20 flex items-center gap-2">
+<span class="text-[11px] font-medium text-white/90">Preview</span>
+<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+</div>
+</div>
+</div>
+<!-- END: ARViewportArea -->
+<!-- BEGIN: BottomSheetControlPanel -->
+<section class="w-full bg-[#2a3746] rounded-t-2xl px-5 pt-4 pb-6 shadow-[0_-8px_25px_rgba(0,0,0,0.5)] z-20 flex flex-col gap-3.5" data-purpose="bottom-sheet-panel">
+<!-- Fit Evaluation Bar -->
+<div class="flex items-center gap-2 flex-wrap" data-purpose="fit-status-row">
+<!-- Fit State Indicator -->
+<div class="flex items-center gap-1.5 text-emerald-400 font-semibold text-[13.5px]">
+<svg class="w-4 h-4 text-emerald-400 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Great Fit — Size S</span>
+</div>
+<!-- Recommended Pill -->
+<span class="bg-[#00897b] text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full shadow-sm">
+          Recommended
+        </span>
+<!-- Alternative Action Pill -->
+<button class="border border-slate-500/70 text-slate-300 hover:text-white hover:border-slate-400 text-[11px] font-medium px-2.5 py-0.5 rounded-full transition-colors ml-auto" type="button">
+          Size Up?
+        </button>
+</div>
+<!-- Product Metadata & Price -->
+<div class="flex items-baseline justify-between pt-0.5" data-purpose="product-meta">
+<div>
+<p class="text-[12px] font-medium text-slate-400 uppercase tracking-wide">
+            H&amp;M • Ethnic Wear
+          </p>
+<h2 class="text-lg font-bold text-white tracking-tight mt-0.5">
+            Floral Printed Wrap Dress
+          </h2>
+</div>
+<div class="text-right">
+<span class="text-lg font-bold text-white tracking-tight">₹ 1,499</span>
+</div>
+</div>
+<!-- Secondary Buttons: Share & Save Look -->
+<div class="grid grid-cols-2 gap-3 pt-0.5" data-purpose="secondary-actions">
+<!-- Share Button -->
+<button class="flex items-center justify-center gap-2 py-2.5 px-4 rounded-md border border-slate-500/80 bg-slate-700/40 hover:bg-slate-700/70 text-slate-100 text-sm font-medium transition-all" type="button">
+<svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Share</span>
+</button>
+<!-- Save Look Button -->
+<button class="flex items-center justify-center gap-2 py-2.5 px-4 rounded-md border border-slate-500/80 bg-slate-700/40 hover:bg-slate-700/70 text-slate-100 text-sm font-medium transition-all" type="button">
+<svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Save Look</span>
+</button>
+</div>
+<!-- Primary Action CTA: Add to Bag -->
+<div class="pt-0.5" data-purpose="primary-action">
+<button class="w-full py-3.5 bg-[#25156a] hover:bg-[#2d1b7d] active:scale-[0.99] text-white font-semibold text-[15px] rounded-lg tracking-wide shadow-md transition-all" type="button">
+          Add to Bag — Size S
+        </button>
+</div>
+<!-- Helper / Alternatives Link -->
+<footer class="text-center pt-0.5" data-purpose="footer-feedback">
+<p class="text-[12px] text-slate-400 font-normal">
+          Not what you expected? <a class="underline hover:text-slate-200 transition-colors" href="#">Try another size or re-upload</a>
+</p>
+</footer>
+</section>
+<!-- END: BottomSheetControlPanel -->
+</main>
+<!-- END: MobileDeviceFrame -->
+</body></html>
