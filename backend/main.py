@@ -65,10 +65,10 @@ def mock_warp_b64():
 async def generate_avatar(
     height: float = Form(170.0), 
     body_shape: str = Form("medium"), 
-    skin_tone: str = Form("Medium", alias="weight") # The UI sends 'weight', we alias it for now
+    weight: str = Form("Medium") 
 ):
     task_id = f"task_{int(time.time())}"
-    b64_img = generate_mock_mesh_b64(height, body_shape, skin_tone)
+    b64_img = generate_mock_mesh_b64(height, body_shape, weight)
     TASKS[task_id] = {"status": "SUCCESS", "result": {"mesh_url": b64_img}}
     return {"task_id": task_id, "status": "QUEUED"}
 
