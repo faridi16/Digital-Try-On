@@ -64,13 +64,13 @@ def mock_warp_image(uploaded_file):
     try:
         original = Image.open(uploaded_file).convert("RGBA")
         
-        # Create a mock green overlay to simulate clothing warp mask
-        overlay = Image.new("RGBA", original.size, (0, 255, 100, 100))
+        # Create a color-blind safe overlay (Okabe-Ito Blue) to simulate clothing warp mask
+        overlay = Image.new("RGBA", original.size, (0, 114, 178, 120))
         result = Image.alpha_composite(original, overlay)
         
         # Add text
         d = ImageDraw.Draw(result)
-        d.text((20, 20), "AR Warp Applied (MVP Mock)", fill=(255, 255, 255, 255))
+        d.text((20, 20), "AR Warp Applied (Color-Blind Safe Mock)", fill=(255, 255, 255, 255))
         return result
     except Exception as e:
         st.error(f"Error processing image: {e}")
